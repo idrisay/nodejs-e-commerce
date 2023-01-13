@@ -12,8 +12,12 @@ mongoose.connect(
     useNewUrlParser: true,
     useUnifiedTopology: true,
   },
-  () => {
-    console.log("Connected to MongoDB");
+  (e) => {
+    if(e?.ok == 0){
+      console.log("Something went wrong",e);
+    }else{
+      console.log("Connected to MongoDB");
+    }
   }
 );
 
@@ -32,9 +36,10 @@ app.get("/products", async (req, res) => {
   res.json(products);
 });
 
-app.post("/products", (req, res) => {
-  products = [...products, req.body];
-  res.json(products);
+app.post("/products", async(req, res) => {
+  // products = [...products, req.body];
+  let response = await ProductModel.create(req.body)
+  res.json(response);
 });
 
 app.listen(BACKEND_PORT, () => {
