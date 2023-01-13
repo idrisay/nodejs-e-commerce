@@ -1,16 +1,23 @@
 const express = require("express");
+const mongoose = require("mongoose");
+const ProductModel = require('./models/Product')
+require("dotenv").config();
 
 const app = express();
 
-let users = [
-  { id: 1, name: "idris", role: "admin" },
-  { id: 2, name: "yusuf", role: "user" },
-];
+mongoose.set("strictQuery", false);
+mongoose.connect(
+  process.env.DB_URL,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  () => {
+    console.log("Connected to MongoDB");
+  }
+);
 
-let products = [
-  { id: 1, name: "iphone", price: 1000 },
-  { id: 2, name: "samsung", price: 900 },
-];
+const BACKEND_PORT = process.env.BACKEND_PORT || 3003;
 
 app.use(express.json()); //Used to parse JSON bodies
 
@@ -20,7 +27,8 @@ app.get("/", (req, res) => {
 });
 
 // get, post, put, delete, patch
-app.get("/products", (req, res) => {
+app.get("/products", async (req, res) => {
+  const products = await ProductModel.find({})
   res.json(products);
 });
 
@@ -29,6 +37,6 @@ app.post("/products", (req, res) => {
   res.json(products);
 });
 
-app.listen(5001, () => {
-  console.log("listening on port 5001");
+app.listen(BACKEND_PORT, () => {
+  console.log(`Listening http://localhost:${BACKEND_PORT}/`);
 });
