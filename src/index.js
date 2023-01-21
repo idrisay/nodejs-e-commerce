@@ -1,8 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const ProductModel = require('./models/Product')
+
 require("dotenv").config();
 
+const { logger } = require('./middleware/app.middleware')
+const appRouter = require('./routes/app.route')
+const productRouter = require('./routes/product.route')
+
+const BACKEND_PORT = process.env.BACKEND_PORT || 3003;
 const app = express();
 
 mongoose.set("strictQuery", false);
@@ -12,35 +17,16 @@ mongoose.connect(
     useNewUrlParser: true,
     useUnifiedTopology: true,
   },
-  (e) => {
-    if(e?.ok == 0){
-      console.log("Something went wrong",e);
-    }else{
-      console.log("Connected to MongoDB");
-    }
+  (err) => {
+      if (err) throw err;
+      else console.log('------> Connected to MongoDB <------')
   }
 );
 
-const BACKEND_PORT = process.env.BACKEND_PORT || 3003;
-
 app.use(express.json()); //Used to parse JSON bodies
-
-// get, post, put, delete, patch
-app.get("/", (req, res) => {
-  res.send("Welcome to my api");
-});
-
-// get, post, put, delete, patch
-app.get("/products", async (req, res) => {
-  const products = await ProductModel.find({})
-  res.json(products);
-});
-
-app.post("/products", async(req, res) => {
-  // products = [...products, req.body];
-  let response = await ProductModel.create(req.body)
-  res.json(response);
-});
+app.use(logger) // Logging
+app.use('/', appRouter)
+app.use('/products', productRouter)
 
 app.listen(BACKEND_PORT, () => {
   console.log(`Listening http://localhost:${BACKEND_PORT}/`);
