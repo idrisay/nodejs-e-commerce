@@ -1,24 +1,34 @@
-var fs = require("fs");
-var json = {};
+const fs = require('fs');
 
-fs.readFile("logger.json", "utf8", function readFileCallback(err, data) {
-  if (err) {
-    console.log(err);
-  } else {
-    json = JSON.parse(data); //now it an object
-  }
-});
+function logger(req, res, next) {
+  const requestData = {
+    method: req.method,
+    url: req.originalUrl,
+    headers: req.headers,
+    body: req.body
+  };
 
-const logger = (req, res, next) => {
-  let rtime = `${new Date().toISOString().slice(0, 10)}`;
-  console.log("Request time: ", rtime);
+  const originalSend = res.send;
+  res.send = function (body) {
+    const responseData = {
+      status: res.statusCode,
+      headers: res.getHeaders(),
+      body: body
+    };
+
+    const logData = {
+      request: requestData,
+      response: responseData
+    };
+
+    fs.appendFile('app.log', JSON.stringify(logData) + '\n', (err) => {
+      if (err) console.error(err);
+    });
+
+    originalSend.call(res, body);
+  };
+
   next();
-};
+}
 
 module.exports = { logger };
-
-// json = [...json, { time: rtime }];
-// json = JSON.stringify(json);
-// fs.writeFile("logger.json", json, "utf8", () => {
-//   console.log("Logged");
-// });
