@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 
 require("dotenv").config();
 
-const { logger } = require('./middleware/app.middleware')
-const appRouter = require('./routes/app.route')
-const productRouter = require('./routes/product.route')
+const { logger } = require('./src/middleware/app.middleware')
+const appRouter = require('./src/routes/app.route')
+const productRouter = require('./src/routes/product.route')
 
 const BACKEND_PORT = process.env.BACKEND_PORT || 3003;
 const app = express();
