@@ -8,8 +8,20 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  let response = await ProductModel.create(req.body);
-  res.json(response);
+  try {
+    let response = await ProductModel.create(req.body);
+    res.json(response);
+  } catch (error) {
+    console.log('ERRRORRR ------->', error);
+    // checking validation
+    if (error.name === "ValidationError") {
+      const message = Object.values(error.errors).map((value) => value.message);
+      return res.status(400).json({
+        error: message,
+      });
+    }
+    res.status(400).json(error.message);
+  }
 });
 
 router.delete("/:id", async (req, res) => {
