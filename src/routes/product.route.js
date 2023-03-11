@@ -42,13 +42,35 @@ router.delete("/:id", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  ProductModel.findOneAndUpdate({ _id: req.params.id }, req.body).exec(function (
-    err,
-    product
-  ) {
-    if (err) return res.status(500).json({ err: err.message });
-    res.json({ product, message: "Successfully updated" });
-  });
+  ProductModel.findOneAndUpdate({ _id: req.params.id }, req.body).exec(
+    function (err, product) {
+      if (err) return res.status(500).json({ err: err.message });
+      res.json({ product, message: "Successfully updated" });
+    }
+  );
+});
+
+router.patch("/:id", async (req, res) => {
+  try {
+    const product = await ProductModel.findById(req.params.id);
+
+    if (!blog) {
+      return res.status(404).send({ message: "Product not found" });
+    }
+
+    // Update only the provided fields in the request body
+    const update = req.body;
+    Object.keys(update).forEach((key) => {
+      product[key] = update[key];
+    });
+
+    await product.save();
+
+    res.send(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Server error" });
+  }
 });
 
 module.exports = router;
