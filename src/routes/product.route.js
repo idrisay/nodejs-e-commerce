@@ -12,7 +12,6 @@ router.post("/", async (req, res) => {
     let response = await ProductModel.create(req.body);
     res.json(response);
   } catch (error) {
-    console.log('ERRRORRR ------->', error);
     // checking validation
     if (error.name === "ValidationError") {
       const message = Object.values(error.errors).map((value) => value.message);
@@ -39,6 +38,16 @@ router.delete("/:id", async (req, res) => {
       message = "Something went wrong.";
       return res.status(404).json({ message });
     }
+  });
+});
+
+router.put("/:id", async (req, res) => {
+  ProductModel.findOneAndUpdate({ _id: req.params.id }, req.body).exec(function (
+    err,
+    product
+  ) {
+    if (err) return res.status(500).json({ err: err.message });
+    res.json({ product, message: "Successfully updated" });
   });
 });
 
