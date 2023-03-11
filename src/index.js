@@ -10,6 +10,7 @@ const productRouter = require('./routes/product.route')
 const BACKEND_PORT = process.env.BACKEND_PORT || 3003;
 const app = express();
 
+
 mongoose.set("strictQuery", false);
 mongoose.connect(
   process.env.DB_URL,
