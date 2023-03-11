@@ -1,6 +1,7 @@
 const express = require("express");
 const User = require("../models/User");
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -20,7 +21,9 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
     
-    res.status(200).json({ message: 'Login successful' });
+    // Create and send JWT
+    const token = jwt.sign({ userId: user._id }, 'secret', { expiresIn: '1d' });
+    res.status(200).json({ message: 'Login successful', token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
@@ -51,7 +54,9 @@ router.post('/register', async (req, res) => {
     
     await newUser.save();
     
-    res.status(201).json({ message: 'User created successfully' });
+    // Create and send JWT
+    const token = jwt.sign({ userId: newUser._id }, 'secret', { expiresIn: '1d' });
+    res.status(201).json({ message: 'User created successfully', token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
