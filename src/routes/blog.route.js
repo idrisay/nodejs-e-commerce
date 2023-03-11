@@ -25,8 +25,7 @@ router.post("/", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-    console.log("id", req.params.id);
-    BlogModel.findByIdAndDelete(req.params.id, function (err, docs) {
+  BlogModel.findByIdAndDelete(req.params.id, function (err, docs) {
     if (!err) {
       console.log("asdasd", docs);
       let message;
@@ -44,13 +43,36 @@ router.delete("/:id", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-    BlogModel.findOneAndUpdate({ _id: req.params.id }, req.body).exec(function (
-      err,
-      product
-    ) {
-      if (err) return res.status(500).json({ err: err.message });
-      res.json({ product, message: "Successfully updated" });
-    });
+  BlogModel.findOneAndUpdate({ _id: req.params.id }, req.body).exec(function (
+    err,
+    product
+  ) {
+    if (err) return res.status(500).json({ err: err.message });
+    res.json({ product, message: "Successfully updated" });
   });
+});
+
+router.patch("/:id", async (req, res) => {
+  try {
+    const blog = await BlogModel.findById(req.params.id);
+
+    if (!blog) {
+      return res.status(404).send({ message: "Blog not found" });
+    }
+
+    // Update only the provided fields in the request body
+    const update = req.body;
+    Object.keys(update).forEach((key) => {
+      blog[key] = update[key];
+    });
+
+    await blog.save();
+
+    res.send(blog);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ message: "Server error" });
+  }
+});
 
 module.exports = router;
