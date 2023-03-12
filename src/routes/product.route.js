@@ -7,6 +7,22 @@ router.get("/", async (req, res) => {
   res.json(products);
 });
 
+router.get('/:id', (req, res) => {
+  const id = req.params.id;
+
+  ProductModel.findById(id)
+    .then((item) => {
+      if (!item) {
+        return res.status(404).json({ error: 'Item not found' });
+      }
+      res.json(item);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: 'Server error' });
+    });
+});
+
 router.post("/", async (req, res) => {
   try {
     let response = await ProductModel.create(req.body);
