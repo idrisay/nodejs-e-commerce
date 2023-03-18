@@ -8,7 +8,6 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  console.log("---->", req.body);
   try {
     let response = await BlogModel.create(req.body);
     res.json(response);

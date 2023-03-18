@@ -42,7 +42,6 @@ router.post("/", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   ProductModel.findByIdAndDelete(req.params.id, function (err, docs) {
     if (!err) {
-      console.log("asdasd", docs);
       let message;
       if (!docs) {
         message = "Could find this document.";

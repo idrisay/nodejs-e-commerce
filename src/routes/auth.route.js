@@ -13,9 +13,9 @@ router.post("/check-login", async (req, res) => {
     const { email, firstName, lastName, isAdmin } = await User.findOne({
       _id: decoded.userId,
     });
-    response = { loggedIn: true, email, firstName, lastName, isAdmin };
+    response = { loggedIn: true, email, firstName, lastName, isAdmin, id: decoded.userId };
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
   res.status(200).json({ message: "success", ...response });
 });
