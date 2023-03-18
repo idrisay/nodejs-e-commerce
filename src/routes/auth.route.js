@@ -4,9 +4,20 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const router = express.Router();
+let SECRET = process.env.SECRET;
 
-router.get("/login", async (req, res) => {
-  res.status(200).json({ message: 'Login check url' });
+router.post("/check-login", async (req, res) => {
+  let response = { loggedIn: false };
+  try {
+    const decoded = jwt.verify(req.body.access_token, SECRET);
+    const { email, firstName, lastName, isAdmin } = await User.findOne({
+      _id: decoded.userId,
+    });
+    response = { loggedIn: true, email, firstName, lastName, isAdmin };
+  } catch (error) {
+    console.log(error);
+  }
+  res.status(200).json({ message: "success", ...response });
 });
 
 router.post("/login", async (req, res) => {
