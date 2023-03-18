@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     let response = await BlogModel.create(req.body);
-    res.json(response);
+    res.json({message: 'Blog has been created succesfully?'});
   } catch (error) {
     // checking validation
     if (error.name === "ValidationError") {
