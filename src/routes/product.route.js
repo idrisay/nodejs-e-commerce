@@ -7,6 +7,26 @@ router.get("/", async (req, res) => {
   res.json(products);
 });
 
+router.get('/search', async (req, res) => {
+  const { query } = req.query;
+
+  try {
+    const products = await ProductModel.find({
+      $or: [
+        { title: { $regex: query, $options: 'i' } },
+        { category: { $regex: query, $options: 'i' } },
+        { description: { $regex: query, $options: 'i' } },
+        { brand: { $regex: query, $options: 'i' } }
+      ]
+    });
+
+    res.json(products);
+  } catch (err) {
+    console.error('ERROR ->', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 router.get('/:id', (req, res) => {
   const id = req.params.id;
 
