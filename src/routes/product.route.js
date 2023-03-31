@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const ProductModel = require("../models/Product");
+const cartRouter = require('./cart.route')
+
+router.use('/cart', cartRouter);
 
 router.get("/", async (req, res) => {
   const products = await ProductModel.find({});
@@ -107,5 +110,8 @@ router.patch("/:id", async (req, res) => {
     res.status(500).send({ message: "Server error" });
   }
 });
+
+// router.use('/cart', cartRouter)
+
 
 module.exports = router;
