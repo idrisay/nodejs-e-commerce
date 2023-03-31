@@ -3,8 +3,9 @@ const ObjectID = mongoose.Schema.Types.ObjectId
 
 const cartSchema = new mongoose.Schema({
     userId : {
-        type: String,
+        type: ObjectID,
         required: true,
+        ref: 'User'
     },
     products: [{
         productId: {

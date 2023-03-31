@@ -26,7 +26,7 @@ router.get('/search', async (req, res) => {
     res.json(products);
   } catch (err) {
     console.error('ERROR ->', err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', error });
   }
 });
 
@@ -42,7 +42,7 @@ router.get('/:id', (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: 'Server error', error });
     });
 });
 
@@ -107,7 +107,7 @@ router.patch("/:id", async (req, res) => {
     res.send(product);
   } catch (error) {
     console.error(error);
-    res.status(500).send({ message: "Server error" });
+    res.status(500).send({ message: "Server error", error });
   }
 });
 

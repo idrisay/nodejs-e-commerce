@@ -8,11 +8,11 @@ router.get("/:userId", async (req, res) => {
   try {
     const cart = await Cart.findOne({ userId });
 
-    if (cart && cart.products.length > 0) {
+    // if (cart) {
       res.status(200).json({ cart });
-    } else {
-      res.status(200).json({message: "Do not have any product in this cart"});
-    }
+    // } else {
+    //   res.status(200).json({message: "Do not have any product in this cart"});
+    // }
   } catch (error) {
     res.status(500).json({ message: "Error getting product to cart.", error });
   }
